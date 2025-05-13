@@ -1,93 +1,96 @@
-# Welcome to your CDK TypeScript project
+# User Management Service
 
-This is a blank project for CDK development with TypeScript.
+This project provides a serverless User Management Service deployed on AWS using the **AWS Cloud Development Kit (CDK)** with TypeScript and the **AWS Serverless Application Model (SAM)**. The service handles core user management functionalities such as **user registration**, **authentication**, and **profile management**.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Prerequisites
 
-## Useful commands
+Before you begin, ensure you have the following installed and configured:
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+- **Node.js** (v14.x or later)
+- **npm** (v6.x or later)
+- **AWS CLI** (v2.x)
+- **AWS CDK** (v2.x) - Install globally with `npm install -g aws-cdk`
+- **AWS SAM CLI** (v1.x) - For local testing and debugging
 
+Additionally, configure your AWS CLI with the necessary credentials and a default region:
 
-To create a TypeScript-based User Service as an AWS Lambda function integrated with API Gateway, following serverless best practices, I’ll design a new implementation inspired by your Express.js user service but tailored for a serverless environment. Your Express.js service provides user authentication with endpoints for registration (/register), login (/login), token refresh (/refresh), and logout (/logout), using MongoDB, JWT, and validation. You’re working in your CDK project (/home/syed/Documents/cdk-backend/ with aws-cdk-lib@2.195.0) and want to use API Gateway (as confirmed), with TypeScript and serverless best practices.
+```bash
+aws configure
+```
 
-I’ll:
+## Installation
 
-Design a TypeScript Lambda function for the User Service, handling /users/register, /users/login, /users/refresh, /users/logout.
-Follow serverless best practices:
-Single Lambda per service for simplicity and cost efficiency.
-Environment variable management via AWS SSM Parameter Store or Secrets Manager.
-Connection pooling for MongoDB to optimize cold starts.
-Lightweight validation without heavy dependencies.
-Proper error handling and logging.
-Modular code with dependency injection.
-Type-safe API Gateway event handling.
-Integrate with your CDK stack, alongside HelloHandler, PythonHandler, and HelloHandler2, using API Gateway with distinct paths.
-Provide local testing with sam local start-api and deployment instructions.
-Address stopping sam local start-api, as you’ve asked about stopping processes.
-Ensure TypeScript compatibility with your existing setup (tsconfig.cdk.json, typescript@5.6.3).
-Requirements (Based on Your Express.js)
-Endpoints:
-POST /users/register: Create a user (name, email, password, role: customer/company), return JWT access/refresh tokens.
-POST /users/login: Authenticate user (email, password), return tokens.
-POST /users/refresh: Refresh access token using refresh token.
-POST /users/logout: Blacklist access token, delete refresh token.
-Features:
-MongoDB for user data, refresh tokens, and blacklisted tokens.
-JWT for authentication (access token: 15m, refresh token: 7d).
-Password hashing (bcrypt).
-Input validation.
-Cookie-based access token (via Set-Cookie header).
-Assumptions:
-MongoDB Atlas for database (via MONGO_URI).
-TypeScript for type safety.
-Single Lambda handling all routes for simplicity.
-API Gateway with CORS for client access.
-Serverless Best Practices
-Single Responsibility: One Lambda for the User Service, handling all user-related routes.
-Stateless: No reliance on in-memory state; use MongoDB for persistence.
-Connection Management: Reuse MongoDB connections across invocations.
-Secrets Management: Store MONGO_URI, JWT_SECRET, JWT_REFRESH_SECRET in AWS Secrets Manager.
-Lightweight Dependencies: Use zod for validation instead of express-validator.
-Logging: Structured logging with AWS CloudWatch.
-Timeout and Memory: Set appropriate Lambda timeout (30s) and memory (256MB).
-Type Safety: Use TypeScript for API Gateway events and MongoDB models.
-CDK: Define infrastructure with explicit API Gateway routes.
-Directory Structure
-text
+Follow these steps to set up the project locally:
 
-Copy
-cdk-backend/
-├── lambda/
-│   ├── hello.js
-│   ├── hello2.js
-├── python-lambda/
-│   ├── lambda_function.py
-│   ├── hello2.py
-├── src/
-│   ├── hello.ts
-│   ├── hello2.ts
-├── user-service-lambda/
-│   ├── src/
-│   │   ├── handler.ts
-│   │   ├── models/
-│   │   │   ├── user.ts
-│   │   │   ├── blacklisted-token.ts
-│   │   │   ├── refresh-token.ts
-│   │   ├── services/
-│   │   │   ├── auth-service.ts
-│   │   │   ├── db-service.ts
-│   │   ├── types.ts
-│   │   ├── validation.ts
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── .env
-├── lib/
-│   ├── cdk-backend-stack.ts
-├── tsconfig.json
-├── tsconfig.cdk.json
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-repo/user-management-service.git
+   ```
+   Replace `your-repo` with the actual repository owner.
+
+2. **Navigate to the project directory**:
+   ```bash
+   cd user-management-service
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+## Usage
+
+To run and test the service locally:
+
+1. **Synthesize the CDK stack**: This generates a CloudFormation template from your TypeScript code.
+   ```bash
+   cdk synth
+   ```
+
+2. **Start the local API using SAM**: This launches a local instance of your API for testing.
+   ```bash
+   sam local start-api --template cdk.out/UserManagementStack.template.json
+   ```
+   Note: Replace `UserManagementStack.template.json` with the actual template file name generated in the `cdk.out/` directory if it differs.
+
+3. **Test the API endpoints**: Use tools like `curl` or Postman to interact with the local API. For example:
+   ```bash
+   curl http://localhost:3000/users
+   ```
+   This assumes an endpoint like `/users` exists. Refer to the project’s API documentation or source code for specific endpoints.
+
+## Deployment
+
+To deploy the service to AWS:
+
+1. **Verify AWS credentials**: Ensure your AWS CLI is configured with valid credentials.
+
+2. **Deploy the CDK stack**: This provisions the necessary AWS resources.
+   ```bash
+   cdk deploy
+   ```
+
+3. **Confirm deployment**: Follow the CLI prompts to approve the changes. Once complete, CDK will output the deployed API endpoint URLs.
+
+After deployment, your service will be live, and you can access the API endpoints as provided in the CDK output.
+
+## Architecture
+
+The User Management Service leverages a serverless architecture on AWS, comprising the following components:
+
+- **API Gateway**: Receives and routes incoming HTTP requests to the appropriate backend services.
+- **Lambda Functions**: Execute the business logic for user registration, authentication, and profile management.
+- **DynamoDB**: Provides persistent storage for user data.
+- **Cognito**: Manages user authentication and authorization.
+
+Note: The exact architecture may vary depending on the implementation. Refer to the CDK stack definitions in the `lib/` directory for details.
+
+## Cleaning Up
+
+To remove the deployed resources and avoid incurring unnecessary AWS costs:
+
+```bash
+cdk destroy
+```
+
+Follow the prompts to confirm the deletion of the stack.
