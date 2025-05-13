@@ -1,0 +1,16 @@
+{
+    "version": "2.0",
+    "routeKey": "$default",
+    "rawPath": "/",
+    "rawQueryString": "",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "requestContext": {
+      "http": {
+        "method": "GET",
+        "path": "/"
+      }
+    },
+    "isBase64Encoded": false
+  }
