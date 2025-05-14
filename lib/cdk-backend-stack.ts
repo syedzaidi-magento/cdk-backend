@@ -28,9 +28,9 @@ export class CdkBackendStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
       environment: {
-        MONGO_URI: process.env.MONGO_URI || 'mongodb+srv://syedqurat27:g0RZncJO7Emb3qDg@usetgo-app.i9jvrem.mongodb.net/uSetGo-App?retryWrites=true&w=majority&appName=uSetGo-App',
-        JWT_SECRET: process.env.JWT_SECRET || '86a25b5bc4ecc3478d3fd7c58e665c81d9294e2f4cfa7253f2e1e6aace9679d2',
-        JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || '86a25b5bc4ecc3478d3fd7c58e665c81d9294e2f4cfa7253f2e1e6aace9679d2',
+        MONGO_URI: process.env.MONGO_URI || '',
+        JWT_SECRET: process.env.JWT_SECRET || '',
+        JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || '',
         NODE_ENV: 'development',
       },
     });
